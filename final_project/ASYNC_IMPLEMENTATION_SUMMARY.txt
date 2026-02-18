@@ -1,0 +1,151 @@
+Express Book Reviews - Async/Await Implementation Summary
+==========================================================
+
+Project: Express Book Reviews Final Project
+Tasks Completed: 10, 11, 12, 13
+Implementation Date: February 18, 2026
+
+Overview:
+---------
+Successfully enhanced Tasks 1-4 by implementing asynchronous versions using 
+Promises and Async-Await patterns. The original synchronous routes remain 
+functional, and new async routes have been added for demonstration.
+
+File Modified:
+--------------
+/router/general.js
+
+New Routes Added:
+-----------------
+
+1. Task 10: GET /async
+   - Description: Get all books using async-await
+   - Method: Async-await with Promise
+   - Status: ✓ Working
+   - Test: curl -X GET http://localhost:5000/async
+
+2. Task 11: GET /isbn-async/:isbn
+   - Description: Get book by ISBN using Promises
+   - Method: Promise with .then()/.catch()
+   - Status: ✓ Working
+   - Test: curl -X GET http://localhost:5000/isbn-async/5
+
+3. Task 12: GET /author-async/:author
+   - Description: Get books by author using async-await
+   - Method: Async-await with Promise
+   - Status: ✓ Working
+   - Test: curl -X GET "http://localhost:5000/author-async/Jane%20Austen"
+
+4. Task 13: GET /title-async/:title
+   - Description: Get books by title using Promises
+   - Method: Promise with .then()/.catch()
+   - Status: ✓ Working
+   - Test: curl -X GET "http://localhost:5000/title-async/The%20Divine%20Comedy"
+
+Implementation Patterns:
+------------------------
+
+Pattern 1: Async-Await (Tasks 10 & 12)
+---------------------------------------
+- Uses async function declaration
+- Wraps operations in Promise
+- Uses await to wait for Promise resolution
+- Handles errors with try-catch blocks
+- More readable and maintainable code
+- Example:
+  async function (req, res) {
+    try {
+      const result = await somePromise;
+      res.send(result);
+    } catch (error) {
+      res.status(500).json({message: error.message});
+    }
+  }
+
+Pattern 2: Promise Callbacks (Tasks 11 & 13)
+---------------------------------------------
+- Creates Promise with new Promise()
+- Uses resolve() for success, reject() for errors
+- Chains .then() for success handling
+- Uses .catch() for error handling
+- Traditional Promise pattern
+- Example:
+  const promise = new Promise((resolve, reject) => {
+    if (success) resolve(data);
+    else reject(error);
+  });
+  promise
+    .then(data => res.send(data))
+    .catch(error => res.status(404).json({message: error}));
+
+Error Handling:
+---------------
+All async routes implement proper error handling:
+- Task 10: Returns 500 for server errors
+- Task 11: Returns 404 for book not found
+- Task 12: Returns 404 for author not found
+- Task 13: Returns 404 for title not found
+
+Testing Results:
+----------------
+✓ All valid requests return correct data
+✓ All invalid requests return proper error messages
+✓ Response formatting is consistent (JSON)
+✓ Status codes are appropriate
+✓ Error messages are descriptive
+
+Benefits of Async Implementation:
+----------------------------------
+1. Prepares codebase for external API integration (Axios)
+2. Non-blocking I/O operations
+3. Better scalability for concurrent requests
+4. Modern JavaScript best practices
+5. Easier to maintain and debug
+6. Compatible with real-world database operations
+
+Comparison: Sync vs Async Routes:
+----------------------------------
+Original Routes (Synchronous):
+- GET / (get all books)
+- GET /isbn/:isbn (get by ISBN)
+- GET /author/:author (get by author)
+- GET /title/:title (get by title)
+
+New Routes (Asynchronous):
+- GET /async (get all books - async)
+- GET /isbn-async/:isbn (get by ISBN - async)
+- GET /author-async/:author (get by author - async)
+- GET /title-async/:title (get by title - async)
+
+Both sets of routes are functional and can be used interchangeably.
+
+Next Steps for GitHub Submission:
+----------------------------------
+1. Ensure all changes are saved
+2. Review the general.js file
+3. Commit changes with meaningful message:
+   git add router/general.js
+   git commit -m "Added async-await and Promise implementations for Tasks 10-13"
+4. Push to GitHub repository:
+   git push origin main
+
+For AI-Graded Evaluation:
+--------------------------
+Submit the public GitHub URL of general.js file.
+
+For Peer-Graded Evaluation:
+----------------------------
+Take screenshots of:
+- task10.png: GET /async endpoint test
+- task11.png: GET /isbn-async/:isbn endpoint test
+- task12.png: GET /author-async/:author endpoint test
+- task13.png: GET /title-async/:title endpoint test
+
+All Tasks Completion Status:
+=============================
+Task 1-6:   ✓ General user routes (synchronous)
+Task 7-9:   ✓ Authenticated user routes
+Task 10-13: ✓ Async/Await implementations
+
+Project Status: COMPLETE
+All functionalities implemented and tested successfully!

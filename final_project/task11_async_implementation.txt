@@ -1,0 +1,54 @@
+Task 11: Get book by ISBN using Promises
+==========================================
+
+Route: GET /isbn-async/:isbn
+Implementation: Promise with .then() and .catch()
+
+Code Implementation:
+--------------------
+public_users.get('/isbn-async/:isbn', function (req, res) {
+  const isbn = req.params.isbn;
+  
+  // Using Promise to get book details
+  const getBookByISBN = new Promise((resolve, reject) => {
+    const book = books[isbn];
+    if (book) {
+      resolve(book);
+    } else {
+      reject(new Error("Book not found"));
+    }
+  });
+
+  getBookByISBN
+    .then(book => res.send(JSON.stringify(book, null, 4)))
+    .catch(error => res.status(404).json({message: error.message}));
+});
+
+Test Commands:
+--------------
+1. Valid ISBN:
+   curl -X GET http://localhost:5000/isbn-async/5
+
+   Output:
+   {
+       "author": "Unknown",
+       "title": "The Book Of Job",
+       "reviews": {}
+   }
+
+2. Invalid ISBN:
+   curl -X GET http://localhost:5000/isbn-async/999
+
+   Output:
+   {"message":"Book not found"}
+
+Key Features:
+-------------
+- Uses Promise callbacks (.then/.catch)
+- Validates book existence before resolving
+- Proper error handling with reject
+- Returns 404 status for not found books
+- Demonstrates Promise-based asynchronous pattern
+
+This implementation showcases the traditional Promise approach with
+.then() for success and .catch() for error handling.

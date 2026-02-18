@@ -1,0 +1,40 @@
+cURL Command:
+curl -X PUT "http://localhost:5000/customer/auth/review/1?review=This%20is%20a%20great%20book!" -b /tmp/cookies.txt
+
+Output:
+{"message":"Review successfully added/updated"}
+
+Verification - Get reviews for book 1:
+curl -X GET http://localhost:5000/review/1
+
+Output:
+{"testuser":"This is a great book!"}
+
+Testing modification of existing review:
+curl -X PUT "http://localhost:5000/customer/auth/review/1?review=Updated%20review:%20Even%20better%20on%20second%20read!" -b /tmp/cookies.txt
+
+Output:
+{"message":"Review successfully added/updated"}
+
+Verification after update:
+curl -X GET http://localhost:5000/review/1
+
+Output:
+{"testuser":"Updated review: Even better on second read!"}
+
+Testing multiple users reviewing the same book:
+First, register and login as another user:
+curl -X POST http://localhost:5000/register -H "Content-Type: application/json" -d '{"username":"anotheruser","password":"pass123"}'
+curl -X POST http://localhost:5000/customer/login -H "Content-Type: application/json" -d '{"username":"anotheruser","password":"pass123"}' -c /tmp/cookies2.txt
+
+Add review from second user:
+curl -X PUT "http://localhost:5000/customer/auth/review/1?review=A%20masterpiece%20of%20African%20literature!" -b /tmp/cookies2.txt
+
+Output:
+{"message":"Review successfully added/updated"}
+
+Verification - Both reviews present:
+curl -X GET http://localhost:5000/review/1
+
+Output:
+{"testuser":"Updated review: Even better on second read!","anotheruser":"A masterpiece of African literature!"}

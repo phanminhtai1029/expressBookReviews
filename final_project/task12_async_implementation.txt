@@ -1,0 +1,69 @@
+Task 12: Get books by Author using Async-Await
+================================================
+
+Route: GET /author-async/:author
+Implementation: async-await with Promise
+
+Code Implementation:
+--------------------
+public_users.get('/author-async/:author', async function (req, res) {
+  try {
+    const author = req.params.author;
+    
+    // Simulate async operation
+    const getBooksByAuthor = new Promise((resolve, reject) => {
+      let booksByAuthor = [];
+      let bookKeys = Object.keys(books);
+      
+      bookKeys.forEach(key => {
+        if (books[key].author === author) {
+          booksByAuthor.push(books[key]);
+        }
+      });
+      
+      if (booksByAuthor.length > 0) {
+        resolve(booksByAuthor);
+      } else {
+        reject(new Error("No books found by this author"));
+      }
+    });
+
+    const booksList = await getBooksByAuthor;
+    res.send(JSON.stringify(booksList, null, 4));
+  } catch (error) {
+    res.status(404).json({message: error.message});
+  }
+});
+
+Test Commands:
+--------------
+1. Valid Author:
+   curl -X GET "http://localhost:5000/author-async/Jane%20Austen"
+
+   Output:
+   [
+       {
+           "author": "Jane Austen",
+           "title": "Pride and Prejudice",
+           "reviews": {}
+       }
+   ]
+
+2. Invalid Author:
+   curl -X GET "http://localhost:5000/author-async/Nonexistent%20Author"
+
+   Output:
+   {"message":"No books found by this author"}
+
+Key Features:
+-------------
+- Uses async-await syntax for cleaner code
+- Filters books by matching author name
+- Returns array of matching books
+- Proper error handling with try-catch
+- Returns 404 for authors not found
+- Validates that at least one book exists before resolving
+
+This implementation demonstrates how async-await makes asynchronous 
+code more readable and maintainable, especially for operations with 
+multiple steps or conditions.

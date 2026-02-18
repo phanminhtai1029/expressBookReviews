@@ -1,0 +1,243 @@
+Express Book Reviews - Complete API Routes Documentation
+=======================================================
+
+Base URL: http://localhost:5000
+
+PUBLIC ROUTES (No Authentication Required)
+===========================================
+
+1. User Registration
+   POST /register
+   Body: {"username": "string", "password": "string"}
+   Description: Register a new user
+   Success: 200 - User registered
+   Error: 404 - User exists or missing fields
+
+2. User Login
+   POST /customer/login
+   Body: {"username": "string", "password": "string"}
+   Description: Login and receive JWT token in session
+   Success: 200 - User logged in
+   Error: 208 - Invalid credentials
+
+GENERAL ROUTES - Synchronous (Tasks 1-5)
+=========================================
+
+3. Get All Books
+   GET /
+   Description: Retrieve all books in the catalog
+   Success: 200 - JSON array of all books
+   Example: curl -X GET http://localhost:5000/
+
+4. Get Book by ISBN
+   GET /isbn/:isbn
+   Parameters: isbn (book ID: 1-10)
+   Description: Get specific book details by ISBN
+   Success: 200 - Book object
+   Example: curl -X GET http://localhost:5000/isbn/1
+
+5. Get Books by Author
+   GET /author/:author
+   Parameters: author (author name)
+   Description: Get all books by specific author
+   Success: 200 - Array of books by author
+   Example: curl -X GET "http://localhost:5000/author/Jane%20Austen"
+
+6. Get Books by Title
+   GET /title/:title
+   Parameters: title (book title)
+   Description: Get books with specific title
+   Success: 200 - Array of matching books
+   Example: curl -X GET "http://localhost:5000/title/Pride%20and%20Prejudice"
+
+7. Get Book Reviews
+   GET /review/:isbn
+   Parameters: isbn (book ID)
+   Description: Get all reviews for a specific book
+   Success: 200 - Object with reviews
+   Example: curl -X GET http://localhost:5000/review/1
+
+ASYNC ROUTES - Asynchronous (Tasks 10-13)
+==========================================
+
+8. Get All Books (Async-Await)
+   GET /async
+   Description: Retrieve all books using async-await pattern
+   Implementation: Async-await with Promise
+   Success: 200 - JSON array of all books
+   Example: curl -X GET http://localhost:5000/async
+
+9. Get Book by ISBN (Promise)
+   GET /isbn-async/:isbn
+   Parameters: isbn (book ID)
+   Description: Get book details using Promise callbacks
+   Implementation: Promise with .then()/.catch()
+   Success: 200 - Book object
+   Error: 404 - Book not found
+   Example: curl -X GET http://localhost:5000/isbn-async/5
+
+10. Get Books by Author (Async-Await)
+    GET /author-async/:author
+    Parameters: author (author name)
+    Description: Get books by author using async-await
+    Implementation: Async-await with Promise
+    Success: 200 - Array of books
+    Error: 404 - No books found
+    Example: curl -X GET "http://localhost:5000/author-async/Jane%20Austen"
+
+11. Get Books by Title (Promise)
+    GET /title-async/:title
+    Parameters: title (book title)
+    Description: Get books by title using Promises
+    Implementation: Promise with .then()/.catch()
+    Success: 200 - Array of books
+    Error: 404 - No books found
+    Example: curl -X GET "http://localhost:5000/title-async/The%20Divine%20Comedy"
+
+AUTHENTICATED ROUTES (Requires Login)
+======================================
+All routes under /customer/auth/* require valid JWT token in session
+
+12. Add/Modify Book Review
+    PUT /customer/auth/review/:isbn?review=text
+    Parameters: 
+      - isbn (book ID)
+      - review (query parameter with review text)
+    Description: Add new review or modify existing review
+    Authentication: Required (JWT in session)
+    Success: 200 - Review added/updated
+    Error: 400 - Missing review, 404 - Book not found
+    Example: 
+      curl -X PUT "http://localhost:5000/customer/auth/review/1?review=Great%20book!" \
+           -b /tmp/cookies.txt
+
+13. Delete Book Review
+    DELETE /customer/auth/review/:isbn
+    Parameters: isbn (book ID)
+    Description: Delete user's own review for a book
+    Authentication: Required (JWT in session)
+    Success: 200 - Review deleted
+    Error: 404 - Review or book not found
+    Example: 
+      curl -X DELETE http://localhost:5000/customer/auth/review/1 \
+           -b /tmp/cookies.txt
+
+AUTHENTICATION MIDDLEWARE
+==========================
+Route: /customer/auth/*
+Description: Validates JWT token from session
+Checks: 
+  - Session exists
+  - JWT token present
+  - Token is valid and not expired
+Returns:
+  - 401 Unauthorized - No session
+  - 403 Forbidden - Invalid token
+  - Proceeds to route handler if valid
+
+RESPONSE FORMATS
+================
+
+Book Object:
+{
+  "author": "string",
+  "title": "string",
+  "reviews": {
+    "username": "review text",
+    ...
+  }
+}
+
+Books Catalog:
+{
+  "1": {...book object...},
+  "2": {...book object...},
+  ...
+}
+
+Error Response:
+{
+  "message": "error description"
+}
+
+HTTP STATUS CODES USED
+======================
+200 - Success
+208 - Invalid login (already reported)
+400 - Bad request (missing data)
+401 - Unauthorized (no session)
+403 - Forbidden (invalid token)
+404 - Not found
+500 - Server error
+
+TESTING WORKFLOW
+================
+
+1. Register a user:
+   curl -X POST http://localhost:5000/register \
+        -H "Content-Type: application/json" \
+        -d '{"username":"testuser","password":"testpass"}'
+
+2. Login (saves session cookie):
+   curl -X POST http://localhost:5000/customer/login \
+        -H "Content-Type: application/json" \
+        -d '{"username":"testuser","password":"testpass"}' \
+        -c /tmp/cookies.txt
+
+3. Add a review (using saved cookie):
+   curl -X PUT "http://localhost:5000/customer/auth/review/1?review=Excellent!" \
+        -b /tmp/cookies.txt
+
+4. View the review:
+   curl -X GET http://localhost:5000/review/1
+
+5. Delete the review:
+   curl -X DELETE http://localhost:5000/customer/auth/review/1 \
+        -b /tmp/cookies.txt
+
+IMPLEMENTATION DETAILS
+======================
+
+Synchronous Routes (Tasks 1-6):
+- Direct access to books object
+- Immediate response
+- Simple and straightforward
+
+Asynchronous Routes (Tasks 10-13):
+- Wrapped in Promises
+- Use async-await or .then()/.catch()
+- Demonstrates modern async patterns
+- Prepares for external API integration
+
+Authentication (Tasks 7-9):
+- JWT with 1-hour expiration
+- Session-based storage
+- User isolation for reviews
+- Middleware protection
+
+FILE STRUCTURE
+==============
+/final_project
+├── index.js (main server, auth middleware)
+├── package.json
+├── router/
+│   ├── general.js (public routes, async routes)
+│   ├── auth_users.js (authenticated routes)
+│   └── booksdb.js (book data)
+└── [submission files]
+
+TECHNOLOGIES
+============
+- Node.js (JavaScript runtime)
+- Express.js (web framework)
+- express-session (session management)
+- jsonwebtoken (JWT authentication)
+- JavaScript Promises & Async-Await
+
+Total Endpoints: 13 routes
+Total Lines (general.js): 165
+Total Lines (auth_users.js): 105
+Total Lines (index.js): 37
+
+Project Status: COMPLETE ✓
+All tasks implemented and tested successfully!

@@ -1,0 +1,14 @@
+cURL Command:
+curl -X DELETE http://localhost:5000/customer/auth/review/1 -b /tmp/cookies.txt
+
+Output:
+{"message":"Review successfully deleted"}
+
+Verification - Only the other user's review remains:
+curl -X GET http://localhost:5000/review/1
+
+Output:
+{"anotheruser":"A masterpiece of African literature!"}
+
+Note: The delete operation only removes the review posted by the logged-in user (testuser).
+Other users' reviews on the same book remain intact, demonstrating proper user isolation.

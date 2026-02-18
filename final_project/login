@@ -1,0 +1,8 @@
+cURL Command:
+curl -X POST http://localhost:5000/customer/login -H "Content-Type: application/json" -d '{"username":"testuser","password":"testpass"}' -c /tmp/cookies.txt
+
+Output:
+User successfully logged in
+
+Note: The login creates a JWT access token and stores it in the session along with the username.
+The session cookie (connect.sid) is saved to cookies.txt for use in authenticated requests.

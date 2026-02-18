@@ -1,0 +1,41 @@
+Task 10: Get all books using Async-Await
+================================================
+
+Route: GET /async
+Implementation: async-await with Promise
+
+Code Implementation:
+--------------------
+public_users.get('/async', async function (req, res) {
+  try {
+    // Simulate async operation by wrapping in Promise
+    const getBooks = new Promise((resolve, reject) => {
+      resolve(books);
+    });
+    
+    const booksList = await getBooks;
+    res.send(JSON.stringify(booksList, null, 4));
+  } catch (error) {
+    res.status(500).json({message: "Error fetching books", error: error.message});
+  }
+});
+
+Test Command:
+-------------
+curl -X GET http://localhost:5000/async
+
+Test Result:
+------------
+Successfully retrieves all books with proper JSON formatting.
+Returns all 10 books from the database with author, title, and reviews.
+
+Key Features:
+-------------
+- Uses async-await syntax
+- Wraps data access in a Promise
+- Includes try-catch for error handling
+- Returns formatted JSON response
+- Demonstrates asynchronous operation pattern
+
+This implementation shows how to use async-await for asynchronous operations,
+which is particularly useful when fetching data from external APIs or databases.

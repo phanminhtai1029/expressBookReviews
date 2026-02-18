@@ -1,0 +1,80 @@
+Task 13: Get books by Title using Promises
+===========================================
+
+Route: GET /title-async/:title
+Implementation: Promise with .then() and .catch()
+
+Code Implementation:
+--------------------
+public_users.get('/title-async/:title', function (req, res) {
+  const title = req.params.title;
+  
+  // Using Promise to get books by title
+  const getBooksByTitle = new Promise((resolve, reject) => {
+    let booksByTitle = [];
+    let bookKeys = Object.keys(books);
+    
+    bookKeys.forEach(key => {
+      if (books[key].title === title) {
+        booksByTitle.push(books[key]);
+      }
+    });
+    
+    if (booksByTitle.length > 0) {
+      resolve(booksByTitle);
+    } else {
+      reject(new Error("No books found with this title"));
+    }
+  });
+
+  getBooksByTitle
+    .then(books => res.send(JSON.stringify(books, null, 4)))
+    .catch(error => res.status(404).json({message: error.message}));
+});
+
+Test Commands:
+--------------
+1. Valid Title:
+   curl -X GET "http://localhost:5000/title-async/The%20Divine%20Comedy"
+
+   Output:
+   [
+       {
+           "author": "Dante Alighieri",
+           "title": "The Divine Comedy",
+           "reviews": {}
+       }
+   ]
+
+2. Invalid Title:
+   curl -X GET "http://localhost:5000/title-async/Nonexistent%20Book"
+
+   Output:
+   {"message":"No books found with this title"}
+
+Key Features:
+-------------
+- Uses Promise callbacks (.then/.catch)
+- Filters books by exact title match
+- Returns array of matching books
+- Validates results before resolving
+- Proper error handling with reject and catch
+- Returns 404 status for titles not found
+
+This implementation demonstrates the Promise-based approach for handling
+asynchronous operations, showing how to chain operations using .then()
+and handle errors with .catch().
+
+Summary of Tasks 10-13:
+========================
+All four tasks successfully demonstrate asynchronous programming patterns:
+- Task 10 & 12: async-await approach (cleaner, more readable)
+- Task 11 & 13: Promise callbacks approach (traditional, explicit)
+
+Both approaches are valid and commonly used in Node.js applications.
+The async-await syntax is generally preferred for its readability,
+while traditional Promises are useful for understanding the underlying
+mechanism and for certain chaining scenarios.
+
+These implementations prepare the codebase for integration with external
+APIs (like Axios) where asynchronous operations are necessary.
