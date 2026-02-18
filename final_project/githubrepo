@@ -1,0 +1,36 @@
+Task 14: GitHub Repository Verification (Forked from IBM)
+==========================================================
+
+GitHub Username: phanminhtai1029
+Repository Name: expressBookReviews
+Repository URL: https://github.com/phanminhtai1029/expressBookReviews
+Parent Repository: ibm-developer-skills-network/expressBookReviews
+
+Verification Command:
+---------------------
+curl -s https://api.github.com/repos/phanminhtai1029/expressBookReviews | jq '.parent.full_name'
+
+Command Output:
+---------------
+"ibm-developer-skills-network/expressBookReviews"
+
+This confirms that the repository is properly forked from the IBM Developer Skills Network.
+
+Additional Verification:
+------------------------
+curl -s https://api.github.com/repos/phanminhtai1029/expressBookReviews | jq '.fork'
+
+Output:
+-------
+true
+
+Status Summary:
+---------------
+✓ Repository is a fork: true
+✓ Parent repository: ibm-developer-skills-network/expressBookReviews  
+✓ All code committed and pushed successfully
+✓ Commit: 80110a6 - "Complete Express Book Reviews Final Project - All Tasks 1-13"
+✓ Files changed: 21 files, 2648 insertions
+
+Fork Status: VERIFIED ✓
+Ready for Submission: YES ✓
